@@ -133,8 +133,7 @@ __fuse_t __fuse __attribute__((section (".fuse"))) = {	.low		= 0x42,
 														.high		= HFUSE_DEFAULT,
 														.extended	= EFUSE_DEFAULT};
   
-int main(void)
-{
+int main(void) {
 	int16_t xSteps, ySteps;
 	uint16_t x, y, xOld, yOld;
 	uint8_t xNeutral8, yNeutral8;
@@ -142,7 +141,6 @@ int main(void)
 	uint8_t yWheel = 0b00110011;
 	uint16_t xNeutral16, yNeutral16;
 	uint8_t xFactor, yFactor, maxRange;
-	
 	
 	// set up the ports immediately
 	DDRA = (1<<DDA6)|(1<<DDA7);
@@ -161,7 +159,6 @@ int main(void)
 	ADMUX = 0x01;							// channel 1
 	ADCSRA = (1<<ADPS0)|(1<<ADPS1);			// prescaler = 8 ==> f_ADC = 1 MHz/8 = 125 kHz
 	ADCSRA |= (1<<ADEN);					// enable ADC
-
 		
 	// extended range mode if ext. range mode button is pushed
 	if ( !(PINA&(1<<PORTA5)) ){
@@ -197,10 +194,7 @@ int main(void)
 			((PINB&(1<<PORTB2)) != eeprom_read_byte(&calibSwitch)) ||
 			!(PINA&((1<<PORTA2)|(1<<PORTA3)))	)	Calibration();
 	
-	
-    while(1)
-    {
-		
+    while(1) {
 		// get x axis position
 		x = GetX();
 		// scale down
@@ -227,7 +221,6 @@ int main(void)
 		
 		// while there are still steps left...
 		while ( (xSteps!=0) || (ySteps!=0) ){
-			
 			// rotate the x wheel...
 			if (xSteps<0){
 				xWheel = RotateLeft(xWheel);
@@ -252,11 +245,8 @@ int main(void)
 			PORTB = (PORTB&0b11111100)|(xWheel & 0b00000011);
 			PORTA = (PORTA&0b00111111)|(yWheel & 0b11000000);
 		}
-		
     }
-	
 }
-
 
 uint16_t GetX(void){
 	// select ADC channel 1
@@ -297,7 +287,6 @@ uint8_t RotateRight (uint8_t cData){
 }
 
 void Calibration(void){
-	
 	uint16_t temp;
 	uint16_t xNeutral16, yNeutral16;
 	uint16_t xMin, xMax, yMin, yMax;
@@ -320,9 +309,7 @@ void Calibration(void){
 	yMax = yNeutral16;
 		
 	// do forever
-	while (1)
-	{
-				
+	while (1) {
 		// check the x axis for new min and max values
 		temp = GetX();
 		if (temp > xMax) xMax = temp;
