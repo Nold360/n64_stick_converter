@@ -1,9 +1,9 @@
-##### Customize the values as indicated below and :
-##### make
-##### make hex
-##### make writeflash
-##### or make clean
-#####
+# Makefile for n64_stick_converter
+# Available Options:
+# make...
+#   hex
+#   writeflash
+#   clean
 
 #####         Target Specific Details          #####
 #####     Customize these for your project     #####
@@ -11,8 +11,6 @@
 # Name of target controller
 # (e.g. 'at90s8515', see the available avr-gcc mmcu
 # options for possible values)
-#MCU=attiny2313
-#MCU=atmega8515
 MCU=attiny24a
 
 # id to use with programmer
@@ -23,7 +21,7 @@ MCU=attiny24a
 # avrdude requires 'm8')
 #PROGRAMMER_MCU=m16
 #PROGRAMMER_MCU=m8515
-PROGRAMMER_MCU=t45
+PROGRAMMER_MCU=t24
 
 # Name of our project
 PROJECTNAME=n64_stick_converter
@@ -62,20 +60,6 @@ AVRDUDE_PROGRAMMERID=stk500v2
 #
 AVRDUDE_PORT=/dev/ttyUSB0
 
-
-####################################################
-#####                Config Done               #####
-#####                                          #####
-##### You shouldn't need to edit anything      #####
-##### below to use the makefile but may wish   #####
-##### to override a few of the flags           #####
-##### nonetheless                              #####
-#####                                          #####
-####################################################
-
-
-##### Flags ####
-
 # HEXFORMAT -- format for .hex file output
 HEXFORMAT=ihex
 
@@ -90,8 +74,7 @@ CFLAGS= -I. $(INC) -g -mmcu=$(MCU) -O$(OPTLEVEL) \
 	$(filter %.lst, $(<:.c=.lst)))
 
 # linker
-LDFLAGS=-Wl,-Map,$(TRG).map -mmcu=$(MCU) \
-	-lm $(LIBS)
+LDFLAGS=-Wl,-Map,$(TRG).map -mmcu=$(MCU) -lm $(LIBS)
 
 ##### executables ####
 CC=avr-gcc
@@ -122,10 +105,12 @@ LST=$(filter %.lst, $(OBJDEPS:.o=.lst))
 .SUFFIXES : .c .cc .cpp .C .o .out .s .S \
 	.hex .ee.hex .h .hh .hpp
 
-.PHONY: writeflash clean stats gdbinit stats
+.PHONY: writeflash clean
 
 # Make targets:
 # all, disasm, stats, hex, writeflash/install, clean
+default: hex
+
 all: $(TRG)
 
 disasm: $(DUMPTRG) stats
@@ -180,7 +165,6 @@ $(TRG): $(OBJDEPS)
 clean:
 	$(REMOVE) $(TRG) $(TRG).map $(DUMPTRG)
 	$(REMOVE) $(OBJDEPS)
-	$(REMOVE) $(LST) $(GDBINITFILE)
-	$(REMOVE) $(GENASMFILES)
+	$(REMOVE) $(LST)
 	$(REMOVE) $(HEXTRG)
 	
